@@ -40,7 +40,7 @@ const authMiddleware = (req, res, next) => {
 
 app.use(authMiddleware);
 
-// Servir arquivos estáticos do frontend (após o build)
+// Servir arquivos estáticos do frontend (fundamental vir antes das rotas customizadas se houver conflito)
 app.use(express.static(path.join(__dirname, 'frontend', 'dist')));
 
 const clientOptions = {
@@ -370,11 +370,16 @@ app.post('/send-bulk', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server running at port ${port}`);
+// Rota para o frontend (Single Page Application) - Deve ser o último!
+app.get('*', (req, res) => {
+    const indexPath = path.join(__dirname, 'frontend', 'dist', 'index.html');
+    if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+    } else {
+        res.status(404).send('Frontend não encontrado. Verifique se o build foi realizado.');
+    }
 });
 
-// Rota para o frontend (Single Page Application)
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'));
+app.listen(port, () => {
+    console.log(`Server running at port ${port}`);
 });
