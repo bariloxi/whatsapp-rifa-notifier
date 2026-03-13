@@ -1,0 +1,11 @@
+node_modules
+frontend/node_modules
+frontend/dist
+.wwebjs_auth
+.wwebjs_cache
+database.json
+*.bat
+*.vbs
+.DS_Store
+.env
+tmp
